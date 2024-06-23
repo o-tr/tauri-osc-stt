@@ -35,10 +35,12 @@ export const ConditionEditor: FC<Props> = ({conditions,onChange}) => {
           }}><TbTrash /></Button>
         </div>
       })}
-      <Button onClick={()=> {
-        conditions.push({id: crypto.randomUUID(), type: "text", value: ""})
-        onChange([...conditions])
-      }}><TbPlus/></Button>
+      <div className={styles.control}>
+        <Button onClick={()=> {
+          conditions.push({id: crypto.randomUUID(), type: "text", value: ""})
+          onChange([...conditions])
+        }}><TbPlus/></Button>
+      </div>
     </div>
   )
 }

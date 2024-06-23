@@ -1,6 +1,6 @@
 .table{
   display: grid;
-  grid-template-columns: 200px 1fr 200px 100px 50px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 50px;
   padding: 4px 0;
   .header{
     display: grid;
@@ -46,6 +46,10 @@
     }
     .osc_value{
       grid-column: 4/5;
+      display: flex;
+      flex-direction: row;
+      align-items: start;
+      gap: 4px;
     }
     .action{
       grid-column: 5/6;

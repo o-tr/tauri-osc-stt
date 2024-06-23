@@ -4,6 +4,7 @@ import {ConfigAtom, KeyWord} from '../atoms/config'
 import { useAtom } from 'jotai'
 import {KeyWords} from "./KeyWords.tsx";
 import {StartStop} from "./StartStop.tsx";
+import {RemoteConfig} from "./remote.tsx";
 
 export const Settings: FC = () => {
   const [config, setConfig] = useAtom(ConfigAtom)
@@ -22,6 +23,7 @@ export const Settings: FC = () => {
       {/*<AudioSettings selectedDeviceId={config.audio.deviceId} onChange={onAudioChange} />*/}
       <StartStop/>
       <KeyWords data={config.keywords} onChange={onKeyWordsChange} />
+      <RemoteConfig/>
     </div>
   )
 }

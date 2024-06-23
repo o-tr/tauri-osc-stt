@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {Condition, KeyWord} from "../atoms/config.ts";
-import {Button, Input} from "antd";
+import {Button, Input, Select} from "antd";
 import styles from "./keyword.module.scss";
 import {TbPlus, TbTrash} from "react-icons/tb";
 import {ConditionEditor} from "./condition/condition.tsx";
@@ -36,20 +36,32 @@ export const KeyWords:FC<Props> = ({data,onChange}) => {
                 onChange([...data])
               }}/>
             </div>
-            <div className={styles.osc_key}><Input value={keyword.oscKey} placeholder={"/avatar/parameters/VRCEmote"} onChange={(event)=>{
-              keyword.oscKey = event.target.value;
+            <div className={styles.osc_key}><Input value={keyword.osc.key} placeholder={"/avatar/parameters/VRCEmote"} onChange={(event)=>{
+              keyword.osc.key = event.target.value;
               onChange([...data])
             }} /></div>
-            <div className={styles.osc_value}><Input value={keyword.oscValue} placeholder={"0"} onChange={(event)=>{
-              keyword.oscValue = event.target.value;
-              onChange([...data])
-            }} /></div>
+            <div className={styles.osc_value}>
+              <Select value={keyword.osc.type} onChange={(value)=>{
+                keyword.osc.type = value;
+                onChange([...data])
+              }}>
+                <Select.Option value={"int"}>int</Select.Option>
+                <Select.Option value={"float"}>float</Select.Option>
+              </Select>
+              <Input value={keyword.osc.value} placeholder={"0"} onChange={(event)=>{
+                keyword.osc.value = event.target.value;
+                onChange([...data])
+              }} onBlur={()=>{
+                keyword.osc.value = `${Number(keyword.osc.value)||0}`;
+                onChange([...data])
+              }} />
+            </div>
             <div className={styles.action}><Button onClick={() => onChange(data.filter((k) => k.id !== keyword.id))}><TbTrash/></Button></div>
           </div>
         })}
       </div>
       <div>
-        <Button onClick={() => onChange([...data, {id: crypto.randomUUID(), name: "",conditions: [{id: crypto.randomUUID(), type: "text", value: ""}] as Condition[], oscKey: "", oscValue: ""}])}><TbPlus/></Button>
+        <Button onClick={() => onChange([...data, {id: crypto.randomUUID(), name: "",conditions: [{id: crypto.randomUUID(), type: "text", value: ""}] as Condition[], osc: {key: "",value:"",type:"int"}}])}><TbPlus/></Button>
       </div>
     </div>
   )

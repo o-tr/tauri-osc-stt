@@ -5,6 +5,7 @@ import IWindow, { ISpeechRecognition } from './type';
 import styles from "./TalkToText.module.scss"
 import {isSomeConditionSatisfied, kanaToHira} from "./utils.ts";
 import {invoke} from "@tauri-apps/api/tauri";
+import {Button} from "antd";
 
 declare const window: IWindow;
 
@@ -56,29 +57,41 @@ export const TalkToText: FC = () => {
     if (lastText === "") return;
     setLastText("")
     if (isSomeConditionSatisfied(config.startWords, lastText)){
+      setKeywordLog(_pv=>["判定開始",..._pv])
       setIsActive(true)
       return;
     }else if (isSomeConditionSatisfied(config.stopWords, lastText)){
+      setKeywordLog(_pv=>["判定停止",..._pv])
       setIsActive(false)
       return;
     }
     if (!isActive) return
     for (const keyword of config.keywords){
       if (isSomeConditionSatisfied(keyword.conditions, lastText)){
-        setKeywordLog(_pv=>[`${keyword.name}: ${keyword.oscKey}->${keyword.oscValue}`,..._pv])
-        void invoke("send-osc", {key: keyword.oscKey, value: keyword.oscValue});
+        setKeywordLog(_pv=>[`${keyword.name}: ${keyword.osc.key}->${keyword.osc.value}(${keyword.osc.type})`,..._pv])
+        void invoke("send", {key: keyword.osc.key, value: keyword.osc.value, variant: keyword.osc.type, target:config.remote});
         return;
       }
     }
   },[lastText,config]);
   
   return <div className={styles.wrapper}>
-    <div className={styles.log}>
-      <p style={{color: "gray"}}>{text}</p>
-      {log.map((v, i) => <p key={i}>{v}</p>)}
+    <div className={styles.logContainer}>
+      <div className={styles.log}>
+        <p style={{color: "gray"}}>{text}</p>
+        {log.map((v, i) => <p key={i}>{v}</p>)}
+      </div>
+      <div className={styles.log}>
+        {keywordLog.map((v, i) => <p key={i}>{v}</p>)}
+      </div>
     </div>
-    <div className={styles.log}>
-      {keywordLog.map((v, i) => <p key={i}>{v}</p>)}
-    </div>
+    <Button onClick={()=>setIsActive((pv)=>{
+      if (pv){
+        setKeywordLog(_pv=>["判定停止",..._pv])
+      }else{
+        setKeywordLog(_pv=>["判定開始",..._pv])
+      }
+      return !pv;
+    })}>{isActive?"判定中":"判定停止中"}</Button>
   </div>
 }
