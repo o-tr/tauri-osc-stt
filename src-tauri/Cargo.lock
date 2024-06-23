@@ -2778,8 +2778,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "tauri-osc-ttt"
-version = "0.0.0"
+name = "tauri-osc-stt"
+version = "0.0.2"
 dependencies = [
  "rosc",
  "serde",
