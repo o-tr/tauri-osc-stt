@@ -1,0 +1,13 @@
+.wrapper{
+  .selection{
+    display:flex;
+    flex-direction: row;
+    .item{
+      display:flex;
+      flex:1;
+      .input{
+        width: 100%;
+      }
+    }
+  }
+}

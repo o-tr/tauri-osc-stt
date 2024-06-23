@@ -3,6 +3,7 @@ import { Settings } from './settings/Settings'
 import { FC } from 'react'
 import { TalkToText } from './TalkToText'
 import styles from "./app.module.scss"
+import {VRCLoader} from "./vrc/vrc.tsx";
 
 const App: FC = () => {
   return (
@@ -10,6 +11,7 @@ const App: FC = () => {
       <TalkToText />
       <Settings />
       <ConfigLoader/>
+      <VRCLoader/>
     </div>
   )
 }

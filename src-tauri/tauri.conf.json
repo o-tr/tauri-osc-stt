@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "tauri-osc-stt",
-    "version": "0.0.1"
+    "version": "0.0.2"
   },
   "tauri": {
     "allowlist": {
@@ -15,6 +15,14 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "fs": {
+        "scope": ["$HOME/AppData/LocalLow/VRChat/**/*"],
+        "readFile": true,
+        "readDir": true
+      },
+      "path": {
+        "all": true
       }
     },
     "windows": [
