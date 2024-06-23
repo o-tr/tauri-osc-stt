@@ -8,8 +8,14 @@ export const RemoteConfig:FC = () => {
   return (
     <div>
       <h2>RemoteConfig</h2>
-      <Input value={config.remote} onChange={(e)=> {
-        config.remote = e.target.value
+      <h3>Send</h3>
+      <Input value={config.remote.send} onChange={(e)=> {
+        config.remote.send = e.target.value
+        setConfig({...config})
+      }}/>
+      <h3>Listen</h3>
+      <Input value={config.remote.listen} onChange={(e)=> {
+        config.remote.listen = e.target.value
         setConfig({...config})
       }}/>
     </div>

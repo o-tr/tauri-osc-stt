@@ -1,11 +1,13 @@
 import {FC, useEffect, useRef, useState} from 'react'
-import { useAtomValue } from 'jotai'
+import {useAtom, useAtomValue} from 'jotai'
 import { ConfigAtom } from './atoms/config'
 import IWindow, { ISpeechRecognition } from './type';
 import styles from "./TalkToText.module.scss"
 import {isSomeConditionSatisfied, kanaToHira} from "./utils.ts";
 import {invoke} from "@tauri-apps/api/tauri";
 import {Button} from "antd";
+import {ChatLog, SystemLog} from "./atoms/logs.ts";
+import {CurrentAvatarAtom} from "./atoms/avatar.ts";
 
 declare const window: IWindow;
 
@@ -13,11 +15,12 @@ const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecogni
 
 export const TalkToText: FC = () => {
   const config = useAtomValue(ConfigAtom)
-  const [log, setLog] = useState<string[]>([]);
-  const [keywordLog, setKeywordLog] = useState<string[]>([]);
+  const [log, setLog] = useAtom(ChatLog);
+  const [systemLog, setSystemLog] = useAtom(SystemLog);
   const [lastText, setLastText] = useState<string>("");
   const [text, setText] = useState('')
   const [isActive, setIsActive] = useState(true);
+  const currentAvatar = useAtomValue(CurrentAvatarAtom);
   const recognition = useRef<ISpeechRecognition>();
   const selectedDeviceId = config.audio.deviceId
   
@@ -57,18 +60,20 @@ export const TalkToText: FC = () => {
     if (lastText === "") return;
     setLastText("")
     if (isSomeConditionSatisfied(config.startWords, lastText)){
-      setKeywordLog(_pv=>["判定開始",..._pv])
+      setSystemLog(_pv=>["判定開始",..._pv])
       setIsActive(true)
       return;
     }else if (isSomeConditionSatisfied(config.stopWords, lastText)){
-      setKeywordLog(_pv=>["判定停止",..._pv])
+      setSystemLog(_pv=>["判定停止",..._pv])
       setIsActive(false)
       return;
     }
     if (!isActive) return
-    for (const keyword of config.keywords){
+    const profile = config.profiles[`${currentAvatar?.user_id}/${currentAvatar?.avatar_id}`] ?? config.profiles["default"];
+    if (!profile) return;
+    for (const keyword of profile.keywords){
       if (isSomeConditionSatisfied(keyword.conditions, lastText)){
-        setKeywordLog(_pv=>[`${keyword.name}: ${keyword.osc.key}->${keyword.osc.value}(${keyword.osc.type})`,..._pv])
+        setSystemLog(_pv=>[`${keyword.name}: ${keyword.osc.key}->${keyword.osc.value}(${keyword.osc.type})`,..._pv])
         void invoke("send", {key: keyword.osc.key, value: keyword.osc.value, variant: keyword.osc.type, target:config.remote});
         return;
       }
@@ -82,14 +87,14 @@ export const TalkToText: FC = () => {
         {log.map((v, i) => <p key={i}>{v}</p>)}
       </div>
       <div className={styles.log}>
-        {keywordLog.map((v, i) => <p key={i}>{v}</p>)}
+        {systemLog.map((v, i) => <p key={i}>{v}</p>)}
       </div>
     </div>
     <Button onClick={()=>setIsActive((pv)=>{
       if (pv){
-        setKeywordLog(_pv=>["判定停止",..._pv])
+        setSystemLog(_pv=>["判定停止",..._pv])
       }else{
-        setKeywordLog(_pv=>["判定開始",..._pv])
+        setSystemLog(_pv=>["判定開始",..._pv])
       }
       return !pv;
     })}>{isActive?"判定中":"判定停止中"}</Button>

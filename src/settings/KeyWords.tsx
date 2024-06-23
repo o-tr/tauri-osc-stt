@@ -11,9 +11,8 @@ type Props = {
 }
 
 export const KeyWords:FC<Props> = ({data,onChange}) => {
-    return (
+  return (
     <div>
-      <h2>KeyWords</h2>
       <div className={styles.table}>
         <div className={styles.header}>
           <div className={styles.name}>Name</div>
