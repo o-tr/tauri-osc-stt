@@ -1,0 +1,10 @@
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  .condition{
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+  }
+}
