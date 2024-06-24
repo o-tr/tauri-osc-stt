@@ -49,7 +49,13 @@ export const TalkToText: FC = () => {
         }
       }
       recognition.current.start()
-    })();
+    })().catch((e)=>{
+      console.error("Failed to start speech recognition",e)
+      void invoke("allow_microphone",{addr:location.href});
+      setTimeout(()=>{
+        location.reload()
+      },1000);
+    });
     return () => {
       recognition.current?.abort()
       recognition.current = undefined

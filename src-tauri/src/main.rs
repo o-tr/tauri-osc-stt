@@ -3,13 +3,24 @@
 
 use rosc::encoder;
 use rosc::{OscMessage, OscPacket, OscType};
-use std::net::SocketAddrV4;
+use std::net::{SocketAddrV4};
 use std::str::FromStr;
-use std::sync::Arc;
-use tauri::{AppHandle, Manager, State};
 use tokio::net::UdpSocket;
 use tokio::sync::{mpsc, Mutex};
+use std::sync::Arc;
+use tauri::{AppHandle, Manager, State};
 use tokio::task;
+use webview2_com::{
+    Microsoft::Web::WebView2::Win32::{ICoreWebView2_13, ICoreWebView2Profile4,ICoreWebView2SetPermissionStateCompletedHandler,ICoreWebView2SetPermissionStateCompletedHandler_Impl},
+};
+use windows::{
+    core::*,
+};
+use core::result::Result;
+use std::rc::Rc;
+use std::ffi::OsStr;
+use std::os::windows::ffi::OsStrExt;
+
 
 struct ShutdownSender {
     sender: Mutex<Option<mpsc::Sender<()>>>,
@@ -23,17 +34,8 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-async fn send(
-    key: &str,
-    value: &str,
-    variant: &str,
-    host: &str,
-    target: &str,
-) -> Result<(), String> {
-    println!(
-        "send_osc: key: {}, value: {}, remote: {}",
-        key, value, target
-    );
+async fn send(key: &str, value: &str, variant: &str, host:&str, target: &str) -> Result<(), String> {
+    println!("send_osc: key: {}, value: {}, remote: {}", key, value, target);
     let sock = UdpSocket::bind(host).await.unwrap();
     let remote = SocketAddrV4::from_str(target).unwrap();
     if variant == "float" {
@@ -41,27 +43,24 @@ async fn send(
             addr: key.to_string(),
             args: vec![OscType::Float(value.parse().unwrap())],
         }))
-        .unwrap();
+            .unwrap();
 
         sock.send_to(&msg_buf, remote).await.unwrap();
-    } else {
+    }else{
         let msg_buf = encoder::encode(&OscPacket::Message(OscMessage {
             addr: key.to_string(),
             args: vec![OscType::Int(value.parse().unwrap())],
         }))
-        .unwrap();
+            .unwrap();
 
         sock.send_to(&msg_buf, remote).await.unwrap();
     }
     Ok(())
 }
 
+
 #[tauri::command]
-async fn listen(
-    app_handle: AppHandle,
-    host: &str,
-    state: State<'_, ShutdownSender>,
-) -> Result<(), String> {
+async fn listen(app_handle: AppHandle, host: &str, state: State<'_, ShutdownSender>) -> Result<(), String> {
     let target = host;
     while let Some(sender) = state.sender.lock().await.take() {
         sender.send(()).await.map_err(|e| e.to_string())?;
@@ -128,14 +127,83 @@ async fn unlisten(state: State<'_, ShutdownSender>) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+fn allow_microphone(app_handle: AppHandle, addr: String){
+    let main_window = app_handle.get_webview_window("main").unwrap();
+    main_window.with_webview(move |webview| unsafe {
+        let origin = str_to_pcwstr(&addr.clone());
+        let core_webview_13: ICoreWebView2_13 = webview.controller().CoreWebView2().unwrap().cast().unwrap();
+        let profile4:ICoreWebView2Profile4 = core_webview_13.Profile().unwrap().cast().unwrap();
+
+        let handler = SetPermissionStateCompletedHandler::new(|result| {
+            println!("SetPermissionStateCompletedHandler: {:?}", result);
+            Ok(())
+        });
+
+        profile4.SetPermissionState(
+            webview2_com::Microsoft::Web::WebView2::Win32::COREWEBVIEW2_PERMISSION_KIND_MICROPHONE,
+            origin,
+            webview2_com::Microsoft::Web::WebView2::Win32::COREWEBVIEW2_PERMISSION_STATE_ALLOW,
+            &handler,
+        ).unwrap();
+    })
+        .unwrap();
+}
+
+#[tauri::command]
+fn deny_microphone(app_handle: AppHandle, addr: String){
+    let main_window = app_handle.get_webview_window("main").unwrap();
+    main_window.with_webview(move |webview| unsafe {
+        let origin = str_to_pcwstr(&addr.clone());
+        let core_webview_13: ICoreWebView2_13 = webview.controller().CoreWebView2().unwrap().cast().unwrap();
+        let profile4:ICoreWebView2Profile4 = core_webview_13.Profile().unwrap().cast().unwrap();
+
+        let handler = SetPermissionStateCompletedHandler::new(|result| {
+            println!("SetPermissionStateCompletedHandler: {:?}", result);
+            Ok(())
+        });
+
+        profile4.SetPermissionState(
+            webview2_com::Microsoft::Web::WebView2::Win32::COREWEBVIEW2_PERMISSION_KIND_MICROPHONE,
+            origin,
+            webview2_com::Microsoft::Web::WebView2::Win32::COREWEBVIEW2_PERMISSION_STATE_DENY,
+            &handler,
+        ).unwrap();
+    })
+        .unwrap();
+}
+
 fn main() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_fs::init())
         .manage(ShutdownSender {
             sender: Mutex::new(None),
         })
-        .invoke_handler(tauri::generate_handler![greet, send, listen, unlisten])
+        .invoke_handler(tauri::generate_handler![greet,send,listen,unlisten,allow_microphone,deny_microphone])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[implement(ICoreWebView2SetPermissionStateCompletedHandler)]
+struct SetPermissionStateCompletedHandler {
+    callback: Rc<dyn Fn(HRESULT) -> windows_result::Result<()>>
+}
+
+impl SetPermissionStateCompletedHandler {
+    pub fn new<F: Fn(HRESULT) -> windows_result::Result<()> + 'static>(callback: F) -> ICoreWebView2SetPermissionStateCompletedHandler {
+        let handler = SetPermissionStateCompletedHandler {
+            callback: Rc::new(callback),
+        };
+        handler.into()
+    }
+}
+
+impl ICoreWebView2SetPermissionStateCompletedHandler_Impl for SetPermissionStateCompletedHandler {
+    fn Invoke(&self, result: HRESULT) -> windows_result::Result<()> {
+        (self.callback)(result)
+    }
+}
+
+fn str_to_pcwstr(s: &str) -> PCWSTR {
+    let wide: Vec<u16> = OsStr::new(s).encode_wide().chain(std::iter::once(0)).collect();
+    PCWSTR::from_raw(wide.as_ptr())
 }
