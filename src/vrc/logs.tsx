@@ -1,12 +1,13 @@
 import {FC, useEffect, useState} from "react";
-import {readDir,readTextFile} from "@tauri-apps/api/fs";
+import {readTextFile} from "@tauri-apps/plugin-fs";
 import {homeDir, join} from "@tauri-apps/api/path";
 import {listen} from "@tauri-apps/api/event";
 import { useAtomValue, useSetAtom} from "jotai";
 import {ConfigAtom} from "../atoms/config.ts";
-import {invoke} from "@tauri-apps/api/tauri";
 import {SystemLog} from "../atoms/logs.ts";
 import {CurrentAvatarAtom} from "../atoms/avatar.ts";
+import {invoke} from "@tauri-apps/api";
+import {compatReadDir} from "../utils.ts";
 
 export const VRCLogsLoader:FC =() => {
   const config = useAtomValue(ConfigAtom)
@@ -16,7 +17,7 @@ export const VRCLogsLoader:FC =() => {
   useEffect(()=>{
     const reload = async()=>{
       const homeDirPath = await homeDir();
-      const dirs = await readDir(await join(homeDirPath,"/AppData/LocalLow/VRChat/VRChat/"));
+      const dirs = await compatReadDir(await join(homeDirPath,"/AppData/LocalLow/VRChat/VRChat/"));
       const files = dirs.filter((dir)=>dir.name?.startsWith("output_log_"));
       const datas = await Promise.all(files.map(async(file)=>{
         const data = await readTextFile(file.path)

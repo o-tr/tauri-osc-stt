@@ -1,4 +1,6 @@
 import {Condition} from "./atoms/config.ts";
+import {DirEntry, readDir} from "@tauri-apps/plugin-fs";
+import {join} from "@tauri-apps/api/path";
 
 export const isSomeConditionSatisfied = (conditions: Condition[], text:string) => {
   return conditions.some((condition) => isConditionSatisfied(condition, text));
@@ -18,4 +20,25 @@ export const kanaToHira = (str: string) => {
     const chr = match.charCodeAt(0) - 0x60;
     return String.fromCharCode(chr);
   });
+}
+
+export type CompatDirEntry = DirEntry & {
+  path: string;
+  children?: CompatDirEntry[];
+}
+
+export const compatReadDir = async (path: string, options?: { recursive: boolean }): Promise<CompatDirEntry[]> => {
+  if (options?.recursive) {
+    const files = await compatReadDir(path);
+    for (const file of files) {
+      if (file.isDirectory) {
+        file.children = await compatReadDir(file.path, options);
+      }
+    }
+    return files;
+  }
+  return await Promise.all((await readDir(path)).map((entry)=>(async()=>({
+    ...entry,
+    path: await join(path, entry.name)
+  }))()))
 }

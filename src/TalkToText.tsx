@@ -4,10 +4,10 @@ import { ConfigAtom } from './atoms/config'
 import IWindow, { ISpeechRecognition } from './type';
 import styles from "./TalkToText.module.scss"
 import {isSomeConditionSatisfied, kanaToHira} from "./utils.ts";
-import {invoke} from "@tauri-apps/api/tauri";
 import {Button} from "antd";
 import {ChatLog, SystemLog} from "./atoms/logs.ts";
 import {CurrentAvatarAtom} from "./atoms/avatar.ts";
+import {invoke} from "@tauri-apps/api";
 
 declare const window: IWindow;
 

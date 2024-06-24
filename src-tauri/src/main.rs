@@ -3,18 +3,17 @@
 
 use rosc::encoder;
 use rosc::{OscMessage, OscPacket, OscType};
-use std::net::{SocketAddrV4};
+use std::net::SocketAddrV4;
 use std::str::FromStr;
-use tokio::net::UdpSocket;
-use tokio::sync::{mpsc, Mutex};
 use std::sync::Arc;
 use tauri::{AppHandle, Manager, State};
+use tokio::net::UdpSocket;
+use tokio::sync::{mpsc, Mutex};
 use tokio::task;
 
 struct ShutdownSender {
     sender: Mutex<Option<mpsc::Sender<()>>>,
 }
-
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -24,8 +23,17 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-async fn send(key: &str, value: &str, variant: &str, host:&str, target: &str) -> Result<(), String> {
-    println!("send_osc: key: {}, value: {}, remote: {}", key, value, target);
+async fn send(
+    key: &str,
+    value: &str,
+    variant: &str,
+    host: &str,
+    target: &str,
+) -> Result<(), String> {
+    println!(
+        "send_osc: key: {}, value: {}, remote: {}",
+        key, value, target
+    );
     let sock = UdpSocket::bind(host).await.unwrap();
     let remote = SocketAddrV4::from_str(target).unwrap();
     if variant == "float" {
@@ -33,24 +41,27 @@ async fn send(key: &str, value: &str, variant: &str, host:&str, target: &str) ->
             addr: key.to_string(),
             args: vec![OscType::Float(value.parse().unwrap())],
         }))
-            .unwrap();
+        .unwrap();
 
         sock.send_to(&msg_buf, remote).await.unwrap();
-    }else{
+    } else {
         let msg_buf = encoder::encode(&OscPacket::Message(OscMessage {
             addr: key.to_string(),
             args: vec![OscType::Int(value.parse().unwrap())],
         }))
-            .unwrap();
+        .unwrap();
 
         sock.send_to(&msg_buf, remote).await.unwrap();
     }
     Ok(())
 }
 
-
 #[tauri::command]
-async fn listen(app_handle: AppHandle, host: &str, state: State<'_, ShutdownSender>) -> Result<(), String> {
+async fn listen(
+    app_handle: AppHandle,
+    host: &str,
+    state: State<'_, ShutdownSender>,
+) -> Result<(), String> {
     let target = host;
     while let Some(sender) = state.sender.lock().await.take() {
         sender.send(()).await.map_err(|e| e.to_string())?;
@@ -78,7 +89,7 @@ async fn listen(app_handle: AppHandle, host: &str, state: State<'_, ShutdownSend
                                 OscPacket::Message(msg) => {
                                     if msg.addr == "/avatar/change" {
                                         let app_handle = app_handle.lock().await;
-                                        app_handle.emit_all("avatar_change", msg.args[0].clone().string())
+                                        app_handle.emit("avatar_change", msg.args[0].clone().string())
                                             .expect("TODO: panic message");
                                     }
                                 }
@@ -119,10 +130,12 @@ async fn unlisten(state: State<'_, ShutdownSender>) -> Result<(), String> {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
         .manage(ShutdownSender {
             sender: Mutex::new(None),
         })
-        .invoke_handler(tauri::generate_handler![greet,send,listen,unlisten])
+        .invoke_handler(tauri::generate_handler![greet, send, listen, unlisten])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,8 +1,9 @@
 import {FC, useEffect} from "react";
 import {homeDir, join} from "@tauri-apps/api/path";
-import {readDir, readTextFile} from "@tauri-apps/api/fs";
+import { readTextFile} from "@tauri-apps/plugin-fs";
 import {useSetAtom} from "jotai";
 import {AvatarsData, AvatarsDataAtom} from "../atoms/avatar.ts";
+import {compatReadDir} from "../utils.ts";
 
 
 export const VRCAvatarLoader:FC = ( ) => {
@@ -10,7 +11,7 @@ export const VRCAvatarLoader:FC = ( ) => {
   useEffect(()=>{
     (async()=>{
       const homeDirPath = await homeDir();
-      const dirs = await readDir(await join(homeDirPath,"/AppData/LocalLow/VRChat/VRChat/OSC/"),{ recursive: true });
+      const dirs = await compatReadDir(await join(homeDirPath,"/AppData/LocalLow/VRChat/VRChat/OSC/"),{ recursive: true });
       const result: AvatarsData = {};
       for (const dir of dirs){
         console.log(dir);
