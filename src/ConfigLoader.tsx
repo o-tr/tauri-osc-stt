@@ -1,13 +1,13 @@
-import { FC, useEffect } from 'react'
-import { useAtomValue } from 'jotai'
-import { ConfigAtom } from './atoms/config'
+import { type FC, useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { ConfigAtom } from "./atoms/config";
 
 export const ConfigLoader: FC = () => {
-  const config = useAtomValue(ConfigAtom)
+	const config = useAtomValue(ConfigAtom);
 
-  useEffect(() => {
-    localStorage.setItem("config", JSON.stringify(config))
-  }, [config])
+	useEffect(() => {
+		localStorage.setItem("config", JSON.stringify(config));
+	}, [config]);
 
-  return <></>
-}
+	return <></>;
+};
