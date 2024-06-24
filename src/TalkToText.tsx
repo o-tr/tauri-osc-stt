@@ -7,7 +7,7 @@ import {isSomeConditionSatisfied, kanaToHira} from "./utils.ts";
 import {Button} from "antd";
 import {ChatLog, SystemLog} from "./atoms/logs.ts";
 import {CurrentAvatarAtom} from "./atoms/avatar.ts";
-import {invoke} from "@tauri-apps/api";
+import {invoke} from "@tauri-apps/api/core";
 
 declare const window: IWindow;
 
