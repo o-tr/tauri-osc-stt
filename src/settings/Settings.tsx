@@ -4,7 +4,7 @@ import { FC } from 'react'
 // import { useAtom } from 'jotai'
 import {StartStop} from "./StartStop.tsx";
 import {RemoteConfig} from "./remote.tsx";
-import {ProfileSettings} from "./profile.tsx";
+import {ProfileSettings} from "./profile";
 
 export const Settings: FC = () => {
   // const [config, setConfig] = useAtom(ConfigAtom)

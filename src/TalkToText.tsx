@@ -6,8 +6,9 @@ import styles from "./TalkToText.module.scss"
 import {isSomeConditionSatisfied, kanaToHira} from "./utils.ts";
 import {Button} from "antd";
 import {ChatLog, SystemLog} from "./atoms/logs.ts";
-import {CurrentAvatarAtom} from "./atoms/avatar.ts";
+import {CurrentAvatarAtom, ProfileKeyAtom} from "./atoms/avatar.ts";
 import {invoke} from "@tauri-apps/api/core";
+import {ProfileSelection} from "./ProfileSelection.tsx";
 
 declare const window: IWindow;
 
@@ -21,6 +22,7 @@ export const TalkToText: FC = () => {
   const [text, setText] = useState('')
   const [isActive, setIsActive] = useState(true);
   const currentAvatar = useAtomValue(CurrentAvatarAtom);
+  const profileKey = useAtomValue(ProfileKeyAtom);
   const recognition = useRef<ISpeechRecognition>();
   const selectedDeviceId = config.audio.deviceId
   
@@ -75,12 +77,12 @@ export const TalkToText: FC = () => {
       return;
     }
     if (!isActive) return
-    const profile = config.profiles[`${currentAvatar?.user_id}/${currentAvatar?.avatar_id}`] ?? config.profiles["default"];
+    const profile = config.profiles[profileKey];
     if (!profile) return;
     for (const keyword of profile.keywords){
       if (isSomeConditionSatisfied(keyword.conditions, lastText)){
         setSystemLog(_pv=>[`${keyword.name}: ${keyword.osc.key}->${keyword.osc.value}(${keyword.osc.type})`,..._pv])
-        void invoke("send", {key: keyword.osc.key, value: keyword.osc.value, variant: keyword.osc.type, target:config.remote});
+        void invoke("send", {key: keyword.osc.key, value: keyword.osc.value, variant: keyword.osc.type, host:"127.0.0.1:9024", target: config.remote.send});
         return;
       }
     }
@@ -104,5 +106,6 @@ export const TalkToText: FC = () => {
       }
       return !pv;
     })}>{isActive?"判定中":"判定停止中"}</Button>
+    <ProfileSelection/>
   </div>
 }

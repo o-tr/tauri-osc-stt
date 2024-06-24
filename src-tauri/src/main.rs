@@ -147,7 +147,7 @@ fn allow_microphone(app_handle: AppHandle, addr: String){
             &handler,
         ).unwrap();
     })
-        .unwrap();
+    .unwrap();
 }
 
 #[tauri::command]
@@ -178,6 +178,7 @@ fn main() {
         .manage(ShutdownSender {
             sender: Mutex::new(None),
         })
+        .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![greet,send,listen,unlisten,allow_microphone,deny_microphone])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

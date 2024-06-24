@@ -24,3 +24,5 @@ export type AvatarOscData = {
 
 export type AvatarsData = {[user: string]: {[avatar: string]: AvatarOscData}};
 export const AvatarsDataAtom = atom<AvatarsData>({});
+
+export const ProfileKeyAtom = atom<string>("default");
