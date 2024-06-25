@@ -53,3 +53,9 @@ export const compatReadDir = async (
 		),
 	);
 };
+
+export const normalizeText = (text?: string) => {
+	return kanaToHira(text ?? "")
+		.replace(/。/g, "")
+		.trim();
+};

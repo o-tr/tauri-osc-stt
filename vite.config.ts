@@ -1,10 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "url";
+import nodePath from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = nodePath.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [react()],
 
+  resolve: {
+    alias: [
+      { find: '@/', replacement: `${__dirname}/src/` },
+    ],
+  },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors

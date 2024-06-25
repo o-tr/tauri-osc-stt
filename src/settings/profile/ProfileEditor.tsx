@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { ConfigAtom } from "@/atoms/config.ts";
 import { useAtom } from "jotai";
-import { KeyWords } from "../KeyWords.tsx";
+import { KeyWords } from "./KeyWords.tsx";
 
 type Props = {
 	profile_id: string;

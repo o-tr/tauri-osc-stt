@@ -2,7 +2,7 @@ import { type FC, useEffect } from "react";
 import { Select } from "antd";
 import { useAtom, useAtomValue } from "jotai";
 import { ConfigAtom } from "@/atoms/config.ts";
-import styles from "@/ProfileSelection.module.scss";
+import styles from "./ProfileSelection.module.scss";
 import {
 	AvatarsDataAtom,
 	CurrentAvatarAtom,
@@ -17,11 +17,12 @@ export const ProfileSelection: FC = () => {
 
 	useEffect(() => {
 		if (!config.profileAutoSwitch) return;
-		if (
+		const isProfileExists = !!(
 			currentAvatar &&
 			avatars[currentAvatar.user_id]?.[currentAvatar.avatar_id] &&
 			config.profiles[`${currentAvatar.user_id}/${currentAvatar.avatar_id}`]
-		) {
+		);
+		if (isProfileExists) {
 			setProfileKey(`${currentAvatar.user_id}/${currentAvatar.avatar_id}`);
 			return;
 		}
