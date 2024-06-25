@@ -116,9 +116,13 @@ export const SpeachToText: FC = () => {
 			<div className={styles.logContainer}>
 				<div className={styles.log}>
 					<LogList>
-						<p className={styles.speaking}>{text}</p>
+						{text &&
+							<div className={styles.item}>
+								<div className={styles.date}/>
+								<div className={styles.speaking}>{text}</div>
+							</div>}
 						{log.toReversed().map((log) => (
-							<LogItem key={log.id} log={log} />
+							<LogItem key={log.id} log={log}/>
 						))}
 					</LogList>
 				</div>
