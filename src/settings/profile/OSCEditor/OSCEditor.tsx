@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import {type FC, Fragment} from "react";
 import { Button, Input, Select } from "antd";
 import type { OSCItem } from "@/atoms/config.ts";
 
@@ -12,12 +12,12 @@ type Props = {
 
 export const OSCEditor: FC<Props> = ({ data, onChange }) => {
 	return (
-		<>
+		<div>
 			<div className={styles.wrapper}>
 				{data.map((item) => {
 					return (
-						<>
-							<div className={styles.header} key={`${item.id}_header`}>
+						<Fragment key={item.id}>
+							<div className={styles.header}>
 								<div className={styles.key}>Key</div>
 								<div className={styles.type}>Type</div>
 								<div className={styles.value_type}>ValueType</div>
@@ -33,7 +33,7 @@ export const OSCEditor: FC<Props> = ({ data, onChange }) => {
 								<div className={styles.delay}>Delay</div>
 								<div className={styles.action} />
 							</div>
-							<div key={item.id} className={styles.item}>
+							<div className={styles.item}>
 								<Input
 									className={styles.key}
 									value={item.key}
@@ -141,7 +141,7 @@ export const OSCEditor: FC<Props> = ({ data, onChange }) => {
 									<TbTrash />
 								</Button>
 							</div>
-						</>
+						</Fragment>
 					);
 				})}
 			</div>
@@ -161,6 +161,6 @@ export const OSCEditor: FC<Props> = ({ data, onChange }) => {
 			>
 				<TbPlus />
 			</Button>
-		</>
+		</div>
 	);
 };
