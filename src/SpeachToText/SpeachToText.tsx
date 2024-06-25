@@ -7,7 +7,7 @@ import {
 	useState,
 } from "react";
 import { useAtomValue } from "jotai";
-import { ConfigAtom } from "@/atoms/config";
+import { ConfigAtom, type OSCItem } from "@/atoms/config";
 import type IWindow from "@/type";
 import type { ISpeechRecognition } from "@/type";
 import styles from "./SpeachToText.module.scss";
@@ -93,16 +93,12 @@ export const SpeachToText: FC = () => {
 		if (!profile) return;
 		for (const keyword of profile.keywords) {
 			if (isSomeConditionSatisfied(keyword.conditions, lastText)) {
-				addSystemLog(
-					`${keyword.name}: ${keyword.osc.key}->${keyword.osc.value}(${keyword.osc.type})`,
-				);
-				void invoke("send", {
-					key: keyword.osc.key,
-					value: keyword.osc.value,
-					variant: keyword.osc.type,
-					host: "127.0.0.1:9024",
-					target: config.remote.send,
-				});
+				for (const osc of keyword.osc) {
+					const {value,delay} = processOscItem(osc, config.remote.send);
+					addSystemLog(
+						`${keyword.name}: ${osc.key}->${value}(${osc.type}) delay:${delay}sec`
+					);
+				}
 				return;
 			}
 		}
@@ -156,4 +152,40 @@ const LogItem: FC<Props> = ({ log }) => {
 			<div className={styles.content}>{log.text}</div>
 		</div>
 	);
+};
+
+const processOscItem = (osc: OSCItem, target: string): {value: string, delay: number} => {
+	const delay = Number(osc.delay);
+	const value = getOscValue(osc).toString();
+
+	if (delay > 0) {
+		setTimeout(() => {
+			void invoke("send", {
+				key: osc.key,
+				value: value,
+				variant: osc.type,
+				host: "127.0.0.1:9024",
+				target,
+			});
+		}, delay * 1000);
+		return {value,delay};
+	}
+	void invoke("send", {
+		key: osc.key,
+		value: value,
+		variant: osc.type,
+		host: "127.0.0.1:9024",
+		target,
+	});
+	return {value,delay};
+};
+
+const getOscValue = (osc: OSCItem) => {
+	const value =
+		osc.value.type === "value"
+			? Number(osc.value.value)
+			: Math.random() * (Number(osc.value.max) - Number(osc.value.min)) +
+				Number(osc.value.min);
+	if (osc.type === "int") return Math.round(value);
+	return value;
 };

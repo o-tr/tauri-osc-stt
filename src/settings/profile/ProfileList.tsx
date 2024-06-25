@@ -45,8 +45,9 @@ export const ProfileList: FC = () => {
 				<Modal
 					open={true}
 					onOk={modalClose}
-					onCancel={modalClose}
-					width={"calc(100% - 300px)"}
+					closable={false}
+					width={"max(calc(100% - 300px), 500px)"}
+					footer={(_, { OkBtn }) => <OkBtn />}
 				>
 					<ProfileEditor profile_id={editKey} />
 				</Modal>

@@ -1,13 +1,14 @@
 import { atom } from "jotai";
-import { z } from "zod";
-import { ZConfig_0_0_1} from "@/atoms/config/0_0_1.ts";
-import {migrate_0_0_1_to_0_0_2, ZConfig_0_0_2} from "@/atoms/config/0_0_2.ts";
+import type { z } from "zod";
+import { ZConfig_0_0_1 } from "@/atoms/config/0_0_1.ts";
+import { migrate_0_0_1_to_0_0_2, ZConfig_0_0_2 } from "@/atoms/config/0_0_2.ts";
 import {
 	migrate_0_0_2_to_0_0_3,
-	ZCondition_0_0_3,
+	type ZCondition_0_0_3,
 	ZConfig_0_0_3,
-	ZKeyWord_0_0_3,
-	ZOSCItem_0_0_3, ZOSCValue_0_0_3
+	type ZKeyWord_0_0_3,
+	type ZOSCItem_0_0_3,
+	type ZOSCValue_0_0_3,
 } from "@/atoms/config/0_0_3.ts";
 
 export type OSCValue = z.infer<typeof ZOSCValue_0_0_3>;

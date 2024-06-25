@@ -1,9 +1,10 @@
-import type { FC } from "react";
+import { type FC, useState } from "react";
 import type { Condition, KeyWord } from "@/atoms/config.ts";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Modal } from "antd";
 import styles from "./keyword.module.scss";
-import { TbPlus, TbTrash } from "react-icons/tb";
+import { TbPlus, TbSettingsCode, TbTrash } from "react-icons/tb";
 import { ConditionEditor } from "../condition";
+import { OSCEditor } from "@/settings/profile/OSCEditor";
 
 type Props = {
 	data: KeyWord[];
@@ -11,14 +12,19 @@ type Props = {
 };
 
 export const KeyWords: FC<Props> = ({ data, onChange }) => {
+	const [oscEditKey, setOscEditKey] = useState<string>();
+
+	const keyword = oscEditKey && data.find((k) => k.id === oscEditKey);
+
+	const closeModal = () => setOscEditKey(undefined);
+
 	return (
 		<div>
 			<div className={styles.table}>
 				<div className={styles.header}>
 					<div className={styles.name}>Name</div>
 					<div className={styles.condition}>Condition</div>
-					<div className={styles.osc_key}>OSC Key</div>
-					<div className={styles.osc_value}>OSC Value</div>
+					<div className={styles.osc_key}>OSC</div>
 					<div className={styles.action} />
 				</div>
 				{data.map((keyword) => {
@@ -44,38 +50,13 @@ export const KeyWords: FC<Props> = ({ data, onChange }) => {
 								/>
 							</div>
 							<div className={styles.osc_key}>
-								<Input
-									value={keyword.osc.key}
-									placeholder={"/avatar/parameters/VRCEmote"}
-									onChange={(event) => {
-										keyword.osc.key = event.target.value;
-										onChange([...data]);
-									}}
-								/>
-							</div>
-							<div className={styles.osc_value}>
-								<Select
-									value={keyword.osc.type}
-									onChange={(value) => {
-										keyword.osc.type = value;
-										onChange([...data]);
+								<Button
+									onClick={() => {
+										setOscEditKey(keyword.id);
 									}}
 								>
-									<Select.Option value={"int"}>int</Select.Option>
-									<Select.Option value={"float"}>float</Select.Option>
-								</Select>
-								<Input
-									value={keyword.osc.value}
-									placeholder={"0"}
-									onChange={(event) => {
-										keyword.osc.value = event.target.value;
-										onChange([...data]);
-									}}
-									onBlur={() => {
-										keyword.osc.value = `${Number(keyword.osc.value) || 0}`;
-										onChange([...data]);
-									}}
-								/>
+									<TbSettingsCode />
+								</Button>
 							</div>
 							<div className={styles.action}>
 								<Button
@@ -101,7 +82,15 @@ export const KeyWords: FC<Props> = ({ data, onChange }) => {
 								conditions: [
 									{ id: crypto.randomUUID(), type: "text", value: "" },
 								] as Condition[],
-								osc: { key: "", value: "", type: "int" },
+								osc: [
+									{
+										id: crypto.randomUUID(),
+										key: "",
+										value: { value: "0", type: "value" },
+										type: "int",
+										delay: "0",
+									},
+								],
 							},
 						])
 					}
@@ -109,6 +98,23 @@ export const KeyWords: FC<Props> = ({ data, onChange }) => {
 					<TbPlus />
 				</Button>
 			</div>
+			{keyword && (
+				<Modal
+					open={true}
+					onOk={closeModal}
+					closable={false}
+					footer={(_, { OkBtn }) => <OkBtn />}
+					width={"max(calc(100% - 300px), 500px)"}
+				>
+					<OSCEditor
+						data={keyword.osc}
+						onChange={(value) => {
+							keyword.osc = value;
+							onChange([...data]);
+						}}
+					/>
+				</Modal>
+			)}
 		</div>
 	);
 };
