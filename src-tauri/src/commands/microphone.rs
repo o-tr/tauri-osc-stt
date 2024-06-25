@@ -4,6 +4,8 @@ use webview2_com::Microsoft::Web::WebView2::Win32::{
     ICoreWebView2Profile4, ICoreWebView2SetPermissionStateCompletedHandler,
     ICoreWebView2SetPermissionStateCompletedHandler_Impl, ICoreWebView2_13,
     COREWEBVIEW2_PERMISSION_STATE,
+    COREWEBVIEW2_PERMISSION_STATE_ALLOW,
+    COREWEBVIEW2_PERMISSION_STATE_DENY,
 };
 use windows_core::{implement, Interface, PCWSTR};
 use windows_result::HRESULT;
@@ -14,7 +16,7 @@ pub fn allow_microphone(app_handle: AppHandle, addr: String) {
     set_permission_state(
         main_window,
         addr,
-        COREWEBVIEW2_PERMISSION_STATE::COREWEBVIEW2_PERMISSION_STATE_ALLOW,
+        COREWEBVIEW2_PERMISSION_STATE_ALLOW,
     );
 }
 
@@ -24,7 +26,7 @@ pub fn deny_microphone(app_handle: AppHandle, addr: String) {
     set_permission_state(
         main_window,
         addr,
-        COREWEBVIEW2_PERMISSION_STATE::COREWEBVIEW2_PERMISSION_STATE_DENY,
+        COREWEBVIEW2_PERMISSION_STATE_DENY,
     );
 }
 

@@ -75,7 +75,7 @@ pub async fn listen(
 }
 
 #[tauri::command]
-async fn unlisten(state: State<'_, ShutdownSender>) -> Result<(), String> {
+pub async fn unlisten(state: State<'_, ShutdownSender>) -> Result<(), String> {
     if let Some(sender) = state.sender.lock().await.take() {
         sender.send(()).await.map_err(|e| e.to_string())?;
     }

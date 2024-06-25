@@ -1,21 +1,9 @@
 // Prevents additiopub(crate)nal console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use rosc::{encoder, OscMessage, OscPacket, OscType};
-use std::{
-    ffi::OsStr, net::SocketAddrV4, os::windows::ffi::OsStrExt, rc::Rc, str::FromStr, sync::Arc,
-};
-use tauri::{AppHandle, Manager, State};
 use tokio::{
-    net::UdpSocket,
-    sync::{mpsc, Mutex},
-    task,
+    sync::{Mutex},
 };
-use webview2_com::Microsoft::Web::WebView2::Win32::{
-    ICoreWebView2Profile4, ICoreWebView2SetPermissionStateCompletedHandler,
-    ICoreWebView2SetPermissionStateCompletedHandler_Impl, ICoreWebView2_13,
-};
-use windows::core::*;
 
 mod commands;
 use crate::commands::{greet::*, microphone::*, osc_receiver::*, osc_sender::*};
