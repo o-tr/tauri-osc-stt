@@ -3,10 +3,10 @@ import { readTextFile } from "@tauri-apps/plugin-fs";
 import { homeDir, join } from "@tauri-apps/api/path";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { useAtomValue, useSetAtom } from "jotai";
-import { ConfigAtom } from "../atoms/config.ts";
-import { SystemLog } from "../atoms/logs.ts";
-import { CurrentAvatarAtom } from "../atoms/avatar.ts";
-import { compatReadDir } from "../utils.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
+import { SystemLog } from "@/atoms/logs.ts";
+import { CurrentAvatarAtom } from "@/atoms/avatar.ts";
+import { compatReadDir } from "@/utils.ts";
 import { invoke } from "@tauri-apps/api/core";
 
 export const VRCLogsLoader: FC = () => {

@@ -1,13 +1,13 @@
 import { type FC, useEffect } from "react";
 import { Select } from "antd";
 import { useAtom, useAtomValue } from "jotai";
-import { ConfigAtom } from "./atoms/config.ts";
-import styles from "./ProfileSelection.module.scss";
+import { ConfigAtom } from "@/atoms/config.ts";
+import styles from "@/ProfileSelection.module.scss";
 import {
 	AvatarsDataAtom,
 	CurrentAvatarAtom,
 	ProfileKeyAtom,
-} from "./atoms/avatar.ts";
+} from "@/atoms/avatar.ts";
 
 export const ProfileSelection: FC = () => {
 	const config = useAtomValue(ConfigAtom);

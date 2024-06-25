@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import type { Condition, KeyWord } from "../atoms/config.ts";
+import type { Condition, KeyWord } from "@/atoms/config.ts";
 import { Button, Input, Select } from "antd";
 import styles from "./keyword.module.scss";
 import { TbPlus, TbTrash } from "react-icons/tb";
-import { ConditionEditor } from "./condition/condition.tsx";
+import { ConditionEditor } from "../condition";
 
 type Props = {
 	data: KeyWord[];

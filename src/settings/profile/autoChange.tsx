@@ -1,7 +1,7 @@
 import { type FC, useId } from "react";
 import { Switch } from "antd";
 import { useAtom } from "jotai/index";
-import { ConfigAtom } from "../../atoms/config.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
 
 export const ProfileAutoChange: FC = () => {
 	const [config, setConfig] = useAtom(ConfigAtom);

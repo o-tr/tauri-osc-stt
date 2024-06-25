@@ -1,4 +1,4 @@
-import type { Condition } from "./atoms/config.ts";
+import type { Condition } from "@/atoms/config.ts";
 import { type DirEntry, readDir } from "@tauri-apps/plugin-fs";
 import { join } from "@tauri-apps/api/path";
 

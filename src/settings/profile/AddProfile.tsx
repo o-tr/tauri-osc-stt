@@ -3,8 +3,8 @@ import styles from "./profile.module.scss";
 import { Button, Select } from "antd";
 import { TbPlus } from "react-icons/tb";
 import { useAtom, useAtomValue } from "jotai/index";
-import { AvatarsDataAtom } from "../../atoms/avatar.ts";
-import { ConfigAtom } from "../../atoms/config.ts";
+import { AvatarsDataAtom } from "@/atoms/avatar.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
 
 export const AddProfile: FC = () => {
 	const [user, setUser] = useState<string>("default");

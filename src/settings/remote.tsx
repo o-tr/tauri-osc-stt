@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { Input } from "antd";
 import { useAtom } from "jotai";
-import { ConfigAtom } from "../atoms/config.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
 
 export const RemoteConfig: FC = () => {
 	const [config, setConfig] = useAtom(ConfigAtom);

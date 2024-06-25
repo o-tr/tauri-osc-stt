@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import { ConditionEditor } from "./condition/condition.tsx";
-import { ConfigAtom } from "../atoms/config.ts";
+import { ConditionEditor } from "./condition";
+import { ConfigAtom } from "@/atoms/config.ts";
 import { useAtom } from "jotai";
 
 export const StartStop: FC = () => {

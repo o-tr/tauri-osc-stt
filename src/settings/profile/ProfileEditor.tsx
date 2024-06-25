@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { ConfigAtom } from "../../atoms/config.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
 import { useAtom } from "jotai";
 import { KeyWords } from "../KeyWords.tsx";
 

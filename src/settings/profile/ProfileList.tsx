@@ -1,6 +1,6 @@
 import { type FC, useState } from "react";
 import { useAtom } from "jotai/index";
-import { ConfigAtom } from "../../atoms/config.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
 import styles from "./ProfileList.module.scss";
 import { Button, Modal } from "antd";
 import { TbPencil, TbTrash } from "react-icons/tb";

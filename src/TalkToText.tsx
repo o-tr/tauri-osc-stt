@@ -1,15 +1,15 @@
 import { type FC, useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
-import { ConfigAtom } from "./atoms/config";
-import type IWindow from "./type";
-import type { ISpeechRecognition } from "./type";
+import { ConfigAtom } from "@/atoms/config";
+import type IWindow from "@/type";
+import type { ISpeechRecognition } from "@/type";
 import styles from "./TalkToText.module.scss";
-import { isSomeConditionSatisfied, kanaToHira } from "./utils.ts";
+import { isSomeConditionSatisfied, kanaToHira } from "@/utils.ts";
 import { Button } from "antd";
-import { ChatLog, SystemLog } from "./atoms/logs.ts";
-import { ProfileKeyAtom } from "./atoms/avatar.ts";
+import { ChatLog, SystemLog } from "@/atoms/logs.ts";
+import { ProfileKeyAtom } from "@/atoms/avatar.ts";
 import { invoke } from "@tauri-apps/api/core";
-import { ProfileSelection } from "./ProfileSelection.tsx";
+import { ProfileSelection } from "@/ProfileSelection.tsx";
 
 declare const window: IWindow;
 
