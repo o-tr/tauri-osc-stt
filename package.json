@@ -1,16 +1,21 @@
 {
   "name": "tauri-osc-stt",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "format": "biome format --write ./src",
+    "lint": "biome lint --write ./src",
+    "check": "biome check --wirte ./src"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.5.6",
+    "@tauri-apps/api": "^2.0.0-beta.13",
+    "@tauri-apps/plugin-fs": "2.0.0-beta.5",
+    "@tauri-apps/plugin-shell": "2.0.0-beta.6",
     "antd": "^5.18.3",
     "jotai": "^2.8.3",
     "react": "^18.2.0",
@@ -20,7 +25,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1",
+    "@biomejs/biome": "^1.8.2",
+    "@tauri-apps/cli": "2.0.0-beta.20",
+    "@types/node": "^20.14.8",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",

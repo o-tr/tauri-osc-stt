@@ -1,0 +1,9 @@
+.wrapper{
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  .select{
+    flex: 1;
+  }
+}

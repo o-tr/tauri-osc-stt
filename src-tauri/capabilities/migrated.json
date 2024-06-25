@@ -1,0 +1,28 @@
+{
+  "identifier": "migrated",
+  "description": "permissions that were migrated from v1",
+  "local": true,
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "path:default",
+    "event:default",
+    "window:default",
+    "app:default",
+    "resources:default",
+    "menu:default",
+    "tray:default",
+    "fs:allow-read-file",
+    "fs:allow-read-dir",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        "$HOME/AppData/LocalLow/VRChat/**/*"
+      ]
+    },
+    "shell:allow-open",
+    "fs:default",
+    "shell:default"
+  ]
+}
