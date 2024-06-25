@@ -1,88 +1,32 @@
 import { atom } from "jotai";
 import { z } from "zod";
+import { ZConfig_0_0_1} from "@/atoms/config/0_0_1.ts";
+import {migrate_0_0_1_to_0_0_2, ZConfig_0_0_2} from "@/atoms/config/0_0_2.ts";
+import {
+	migrate_0_0_2_to_0_0_3,
+	ZCondition_0_0_3,
+	ZConfig_0_0_3,
+	ZKeyWord_0_0_3,
+	ZOSCItem_0_0_3, ZOSCValue_0_0_3
+} from "@/atoms/config/0_0_3.ts";
 
-export const ZCondition = z.object({
-	id: z.string(),
-	type: z.union([z.literal("text"), z.literal("regex")]),
-	value: z.string(),
-});
-
-export const ZOSCValue = z.object({
-	type: z.union([z.literal("float"), z.literal("int")]),
-	key: z.string(),
-	value: z.string(),
-});
-
-export const ZKeyWord = z.object({
-	id: z.string(),
-	name: z.string(),
-	conditions: z.array(ZCondition),
-	osc: ZOSCValue,
-});
-
-export const ZProfile = z.object({
-	id: z.string(),
-	key: z.string(),
-	name: z.string(),
-	keywords: z.array(ZKeyWord),
-});
-
-export const ZRemote = z.object({
-	send: z.string(),
-	listen: z.string(),
-});
-
-export const ZLegacyConfig_0_0_1 = z.object({
-	audio: z.object({
-		deviceId: z.string(),
-	}),
-	keywords: z.array(ZKeyWord),
-	startWords: z.array(ZCondition),
-	stopWords: z.array(ZCondition),
-	remote: ZRemote,
-});
-
-export const ZConfig = z.object({
-	audio: z.object({
-		deviceId: z.string(),
-	}),
-	profiles: z.record(z.string(), ZProfile),
-	profileAutoSwitch: z.boolean(),
-	startWords: z.array(ZCondition),
-	stopWords: z.array(ZCondition),
-	remote: ZRemote,
-});
-
-export type Condition = z.infer<typeof ZCondition>;
-export type OSCValue = z.infer<typeof ZOSCValue>;
-export type KeyWord = z.infer<typeof ZKeyWord>;
-export type Config = z.infer<typeof ZConfig>;
-export type LegacyConfig_0_0_1 = z.infer<typeof ZLegacyConfig_0_0_1>;
-
-const migrate_0_0_1_to_0_0_2 = (config: LegacyConfig_0_0_1) => {
-	return {
-		...config,
-		profiles: {
-			default: {
-				id: crypto.randomUUID,
-				key: "default",
-				name: "default",
-				keywords: config.keywords,
-			},
-		},
-		profileAutoSwitch: true,
-		keywords: undefined,
-	};
-};
+export type OSCValue = z.infer<typeof ZOSCValue_0_0_3>;
+export type OSCItem = z.infer<typeof ZOSCItem_0_0_3>;
+export type Condition = z.infer<typeof ZCondition_0_0_3>;
+export type KeyWord = z.infer<typeof ZKeyWord_0_0_3>;
+export type Config = z.infer<typeof ZConfig_0_0_3>;
 
 export const ConfigAtom = atom<Config>(
 	(() => {
 		try {
 			let value = JSON.parse(localStorage.getItem("config") || "{}");
-			if (ZLegacyConfig_0_0_1.safeParse(value).success) {
+			if (ZConfig_0_0_1.safeParse(value).success) {
 				value = migrate_0_0_1_to_0_0_2(value);
 			}
-			return ZConfig.parse(value);
+			if (ZConfig_0_0_2.safeParse(value).success) {
+				value = migrate_0_0_2_to_0_0_3(value);
+			}
+			return ZConfig_0_0_3.parse(value);
 		} catch (_) {
 			const defaultValue: Config = {
 				audio: { deviceId: "default" },
