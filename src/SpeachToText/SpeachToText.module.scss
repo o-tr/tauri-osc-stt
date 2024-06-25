@@ -12,6 +12,10 @@
     .log{
       overflow-y: scroll;
       flex: 1;
+      .speaking{
+        color:gray;
+        grid-column: 2/3;
+      }
     }
   }
 }

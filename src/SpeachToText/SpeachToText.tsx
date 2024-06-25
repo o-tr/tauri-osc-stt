@@ -116,7 +116,7 @@ export const SpeachToText: FC = () => {
 			<div className={styles.logContainer}>
 				<div className={styles.log}>
 					<LogList>
-						<p style={{ color: "gray" }}>{text}</p>
+						<p className={styles.speaking}>{text}</p>
 						{log.toReversed().map((log) => (
 							<LogItem key={log.id} log={log} />
 						))}
