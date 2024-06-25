@@ -1,7 +1,7 @@
 import { type FC, useEffect, useState } from "react";
-import { ConfigAtom } from "../../atoms/config.ts";
+import { ConfigAtom } from "@/atoms/config.ts";
 import { useAtomValue } from "jotai";
-import { AvatarsDataAtom, CurrentAvatarAtom } from "../../atoms/avatar.ts";
+import { AvatarsDataAtom, CurrentAvatarAtom } from "@/atoms/avatar.ts";
 import styles from "./profile.module.scss";
 import { ProfileAutoChange } from "./autoChange.tsx";
 import { AddProfile } from "./AddProfile.tsx";

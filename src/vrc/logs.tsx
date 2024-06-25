@@ -8,12 +8,14 @@ import { SystemLog } from "@/atoms/logs.ts";
 import { CurrentAvatarAtom } from "@/atoms/avatar.ts";
 import { compatReadDir } from "@/utils.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { useLogs } from "@/log.ts";
 
 export const VRCLogsLoader: FC = () => {
 	const config = useAtomValue(ConfigAtom);
-	const setSystemLog = useSetAtom(SystemLog);
+	const [, addSystemLog] = useLogs(SystemLog);
 	const [watchLog, setWatchLog] = useState<string>("");
 	const setCurrentAvatar = useSetAtom(CurrentAvatarAtom);
+
 	useEffect(() => {
 		const reload = async () => {
 			const homeDirPath = await homeDir();
@@ -39,16 +41,15 @@ export const VRCLogsLoader: FC = () => {
 			);
 			const latest_log = datas.sort((a, b) => b.date - a.date)[0];
 			setWatchLog((pv) => {
-				console.log(pv, latest_log.path);
 				if (pv === latest_log.path) return pv;
-				setSystemLog((_pv) => [..._pv, `Watching ${latest_log.name}`]);
+				addSystemLog(`Watching ${latest_log.name}`);
 				return latest_log.path;
 			});
 		};
 		void reload();
 		const interval = setInterval(reload, 1000 * 60 * 5);
 		return () => clearInterval(interval);
-	}, [setSystemLog]);
+	}, [addSystemLog]);
 
 	useEffect(() => {
 		const update = async () => {
@@ -61,17 +62,14 @@ export const VRCLogsLoader: FC = () => {
 			if (!user_id || !avatar_id) return;
 			setCurrentAvatar((pv) => {
 				if (pv?.user_id && pv.avatar_id) return pv;
-				setSystemLog((pv) => [
-					...pv,
-					`[AvatarChanged/Log] Avatar:${avatar_id}`,
-				]);
+				addSystemLog(`[AvatarChanged/Log] Avatar:${avatar_id}`);
 				return { user_id, avatar_id };
 			});
 		};
 		void update();
 		const interval = setInterval(update, 1000 * 60);
 		return () => clearInterval(interval);
-	}, [watchLog, setCurrentAvatar, setSystemLog]);
+	}, [watchLog, setCurrentAvatar, addSystemLog]);
 
 	useEffect(() => {
 		let unlisten: UnlistenFn | undefined;
@@ -82,10 +80,7 @@ export const VRCLogsLoader: FC = () => {
 
 				setCurrentAvatar((pv) => {
 					if (pv && pv.avatar_id === avatar_id) return pv;
-					setSystemLog((_pv) => [
-						..._pv,
-						`[AvatarChanged/OSC] Avatar:${avatar_id}`,
-					]);
+					addSystemLog(`[AvatarChanged/OSC] Avatar:${avatar_id}`);
 					if (!pv) return { user_id: "", avatar_id };
 					return { user_id: pv.user_id, avatar_id };
 				});
@@ -98,6 +93,6 @@ export const VRCLogsLoader: FC = () => {
 				unlisten();
 			}
 		};
-	}, [config, setCurrentAvatar, setSystemLog]);
+	}, [config, setCurrentAvatar, addSystemLog]);
 	return <></>;
 };

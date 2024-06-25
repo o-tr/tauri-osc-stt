@@ -16,7 +16,6 @@ export const VRCAvatarLoader: FC = () => {
 			);
 			const result: AvatarsData = {};
 			for (const dir of dirs) {
-				console.log(dir);
 				const user_id = dir.name;
 				if (!user_id) continue;
 				result[user_id] ??= {};
