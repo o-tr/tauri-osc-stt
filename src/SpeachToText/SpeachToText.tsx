@@ -3,20 +3,20 @@ import { useAtom, useAtomValue } from "jotai";
 import { ConfigAtom } from "@/atoms/config";
 import type IWindow from "@/type";
 import type { ISpeechRecognition } from "@/type";
-import styles from "./TalkToText.module.scss";
+import styles from "./SpeachToText.module.scss";
 import { isSomeConditionSatisfied, kanaToHira } from "@/utils.ts";
 import { Button } from "antd";
 import { ChatLog, SystemLog } from "@/atoms/logs.ts";
 import { ProfileKeyAtom } from "@/atoms/avatar.ts";
 import { invoke } from "@tauri-apps/api/core";
-import { ProfileSelection } from "@/ProfileSelection.tsx";
+import { ProfileSelection } from "./ProfileSelection.tsx";
 
 declare const window: IWindow;
 
 const SpeechRecognition =
 	window.webkitSpeechRecognition || window.SpeechRecognition;
 
-export const TalkToText: FC = () => {
+export const SpeachToText: FC = () => {
 	const config = useAtomValue(ConfigAtom);
 	const [log, setLog] = useAtom(ChatLog);
 	const [systemLog, setSystemLog] = useAtom(SystemLog);
