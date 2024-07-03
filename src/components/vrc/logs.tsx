@@ -6,9 +6,9 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { ConfigAtom } from "@/atoms/config.ts";
 import { SystemLog } from "@/atoms/logs.ts";
 import { CurrentAvatarAtom } from "@/atoms/avatar.ts";
-import { compatReadDir } from "@/utils.ts";
+import { compatReadDir } from "@/lib/utils.ts";
 import { invoke } from "@tauri-apps/api/core";
-import { useLogs } from "@/log.ts";
+import { useLogs } from "@/hooks/log.ts";
 
 export const VRCLogsLoader: FC = () => {
 	const config = useAtomValue(ConfigAtom);

@@ -11,13 +11,13 @@ import { ConfigAtom, type OSCItem } from "@/atoms/config";
 import type IWindow from "@/type";
 import type { ISpeechRecognition } from "@/type";
 import styles from "./SpeachToText.module.scss";
-import { isSomeConditionSatisfied, normalizeText } from "@/utils.ts";
+import { isSomeConditionSatisfied, normalizeText } from "@/lib/utils.ts";
 import { Button } from "antd";
 import { ChatLog, type Log, SystemLog } from "@/atoms/logs.ts";
 import { ProfileKeyAtom } from "@/atoms/avatar.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { ProfileSelection } from "./ProfileSelection.tsx";
-import { useLogs } from "@/log.ts";
+import { useLogs } from "@/hooks/log.ts";
 
 declare const window: IWindow;
 

@@ -4,7 +4,7 @@ import { Button, Input, Modal } from "antd";
 import styles from "./keyword.module.scss";
 import { TbPlus, TbSettingsCode, TbTrash } from "react-icons/tb";
 import { ConditionEditor } from "../condition";
-import { OSCEditor } from "@/settings/profile/OSCEditor";
+import { OSCEditor } from "@/components/settings/profile/OSCEditor";
 
 type Props = {
 	data: KeyWord[];

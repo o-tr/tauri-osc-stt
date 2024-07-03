@@ -3,7 +3,7 @@ import { Button, Input, Select } from "antd";
 import { TbPlus, TbTrash } from "react-icons/tb";
 import type { Condition } from "@/atoms/config.ts";
 import styles from "./condition.module.scss";
-import { kanaToHira } from "@/utils.ts";
+import { kanaToHira } from "@/lib/utils.ts";
 
 type Props = {
 	conditions: Condition[];
