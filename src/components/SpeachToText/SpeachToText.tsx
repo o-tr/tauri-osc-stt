@@ -35,7 +35,7 @@ export const SpeachToText: FC = () => {
 	const profileKey = useAtomValue(ProfileKeyAtom);
 	const recognition = useRef<ISpeechRecognition>();
 	const selectedDeviceId = config.audio.deviceId;
-	const portManager = useRef(new PortManager(9100, 9300));
+	const portManager = useRef(new PortManager(49152, 65535));
 
 	useEffect(() => {
 		void (async () => {
