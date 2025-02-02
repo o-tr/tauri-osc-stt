@@ -11,13 +11,14 @@ import { ConfigAtom, type OSCItem } from "@/atoms/config";
 import type IWindow from "@/type";
 import type { ISpeechRecognition } from "@/type";
 import styles from "./SpeachToText.module.scss";
-import { isSomeConditionSatisfied, normalizeText } from "@/utils.ts";
+import { isSomeConditionSatisfied, normalizeText } from "@/lib/utils.ts";
 import { Button } from "antd";
 import { ChatLog, type Log, SystemLog } from "@/atoms/logs.ts";
 import { ProfileKeyAtom } from "@/atoms/avatar.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { ProfileSelection } from "./ProfileSelection.tsx";
-import { useLogs } from "@/log.ts";
+import { useLogs } from "@/hooks/log.ts";
+import {PortManager} from "@/lib/portManager.ts";
 
 declare const window: IWindow;
 
@@ -34,6 +35,7 @@ export const SpeachToText: FC = () => {
 	const profileKey = useAtomValue(ProfileKeyAtom);
 	const recognition = useRef<ISpeechRecognition>();
 	const selectedDeviceId = config.audio.deviceId;
+	const portManager = useRef(new PortManager(49152, 65535));
 
 	useEffect(() => {
 		void (async () => {
@@ -94,7 +96,7 @@ export const SpeachToText: FC = () => {
 		for (const keyword of profile.keywords) {
 			if (isSomeConditionSatisfied(keyword.conditions, lastText)) {
 				for (const osc of keyword.osc) {
-					const {value,delay} = processOscItem(osc, config.remote.send);
+					const {value,delay} = processOscItem(osc, config.remote.send, portManager.current.getPort());
 					addSystemLog(
 						`${keyword.name}: ${osc.key}->${value}(${osc.type}) delay:${delay}sec`
 					);
@@ -158,7 +160,7 @@ const LogItem: FC<Props> = ({ log }) => {
 	);
 };
 
-const processOscItem = (osc: OSCItem, target: string): {value: string, delay: number} => {
+const processOscItem = (osc: OSCItem, target: string, port: number): {value: string, delay: number} => {
 	const delay = Number(osc.delay);
 	const value = getOscValue(osc).toString();
 
@@ -168,7 +170,7 @@ const processOscItem = (osc: OSCItem, target: string): {value: string, delay: nu
 				key: osc.key,
 				value: value,
 				variant: osc.type,
-				host: "127.0.0.1:9024",
+				host: `127.0.0.1:${port}`,
 				target,
 			});
 		}, delay * 1000);
@@ -178,7 +180,7 @@ const processOscItem = (osc: OSCItem, target: string): {value: string, delay: nu
 		key: osc.key,
 		value: value,
 		variant: osc.type,
-		host: "127.0.0.1:9024",
+		host: `127.0.0.1:${port}`,
 		target,
 	});
 	return {value,delay};

@@ -3,7 +3,7 @@ import { homeDir, join } from "@tauri-apps/api/path";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 import { useSetAtom } from "jotai";
 import { type AvatarsData, AvatarsDataAtom } from "@/atoms/avatar.ts";
-import { compatReadDir } from "@/utils.ts";
+import { compatReadDir } from "@/lib/utils.ts";
 
 export const VRCAvatarLoader: FC = () => {
 	const setDatas = useSetAtom(AvatarsDataAtom);
