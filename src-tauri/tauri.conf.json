@@ -17,7 +17,7 @@
     ]
   },
   "productName": "tauri-osc-stt",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "identifier": "jp.ootr.osc-stt",
   "plugins": {},
   "app": {
