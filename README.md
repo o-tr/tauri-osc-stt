@@ -1,7 +1,8 @@
-# Tauri + React + Typescript
+# tauri-osc-stt
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+呪文詠唱用の音声認識アプリケーションです。  
+任意の文字列または正規表現に合致する文字列を認識した際に、任意のOSCメッセージを送信します。  
 
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## 使い方
+ProfileListからプロファイルを選択し、設定を行います  
+それぞれ「+」をクリックすることで、項目を追加できます  

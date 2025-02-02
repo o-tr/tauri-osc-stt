@@ -1,4 +1,10 @@
-import {atom} from "jotai";
+import { atom } from "jotai";
 
-export const ChatLog = atom<string[]>([])
-export const SystemLog = atom<string[]>([]);
+export type Log = {
+	id: string;
+	text: string;
+	date: string;
+};
+
+export const ChatLog = atom<Log[]>([]);
+export const SystemLog = atom<Log[]>([]);

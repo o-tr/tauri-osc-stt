@@ -1,11 +1,11 @@
 .table{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 50px;
+  grid-template-columns: 1fr 1fr 50px 50px;
   padding: 4px 0;
   .header{
     display: grid;
     grid-template-columns: subgrid;
-    grid-column: 1/6;
+    grid-column: 1/5;
     gap: 4px;
     .name{
       grid-column: 1/2;
@@ -16,21 +16,18 @@
     .osc_key{
       grid-column: 3/4;
     }
-    .osc_value{
+    .action{
       grid-column: 4/5;
     }
-    .action{
-      grid-column: 5/6;
-    }
-    border-bottom: solid 2px #ccc;
+    border-bottom: solid 4px #ccc;
   }
 
 
   .body{
     display: grid;
     grid-template-columns: subgrid;
-    grid-column: 1/6;
-    border-bottom: solid 1px #ccc;
+    grid-column: 1/5;
+    border-bottom: solid 2px #ccc;
     padding: 4px 0;
     gap: 4px;
     .name{
@@ -44,15 +41,8 @@
     .osc_key{
       grid-column: 3/4;
     }
-    .osc_value{
-      grid-column: 4/5;
-      display: flex;
-      flex-direction: row;
-      align-items: start;
-      gap: 4px;
-    }
     .action{
-      grid-column: 5/6;
+      grid-column: 4/5;
     }
   }
 }
